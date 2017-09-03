@@ -1,8 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const Question = require('./models').Question
 
 // GET /questions
 router.get('/', (req,res) => {
+  Question.find({}, null, {sort: {createdAt: -1}}, (err, questions) => {
+
+  })
   res.json({response: "You sent me a GET request"})
 })
 
