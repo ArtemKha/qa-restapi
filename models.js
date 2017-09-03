@@ -7,6 +7,14 @@ const sortAnswers = (a, b) => {
   return b.votes - a.votes
 }
 
+
+const AnswerSchema = new Schema({
+  text: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  votes: { type: Number, default: 0 }
+})
+
 AnswerSchema.method('update', (updates, callback) => {
   Object.assign(this, updates, {updatedAt: new Date()})
   this.parent().save(callback)
@@ -17,13 +25,6 @@ AnswerSchema.method('vote', (vote, callback) => {
     ? this.votes += 1
     : this.votes -= 1
   this.parent().save(callback)
-})
-
-const AnswerSchema = new Schema({
-  text: String,
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  votes: { type: Number, default: 0 }
 })
 
 const QuestionSchema = new Schema({
@@ -37,6 +38,6 @@ QuestionSchema.pre('save', function(next) {
   next()
 })
 
-const Question = mongoose.model('Question', QustionSchem)
+const Question = mongoose.model('Question', QuestionSchema)
 
 module.exports.Question = Question
