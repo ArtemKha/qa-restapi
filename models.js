@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const sortAnswers = (a, b) => {
-  if (a.votes === b.votes)
-    return b.updatedAt - a.updatedAt
+const sortAnswers = function(a, b) {
+  if (a.votes === b.votes) return b.updatedAt - a.updatedAt
   return b.votes - a.votes
 }
 
@@ -15,12 +14,12 @@ const AnswerSchema = new Schema({
   votes: { type: Number, default: 0 }
 })
 
-AnswerSchema.method('update', (updates, callback) => {
-  Object.assign(this, updates, {updatedAt: new Date()})
-  this.parent().save(callback)
+AnswerSchema.method("update", function (updates, callback) {
+  Object.assign(this, updates, { updatedAt: new Date() })
+  this.parent().save(callback);
 })
 
-AnswerSchema.method('vote', (vote, callback) => {
+AnswerSchema.method('vote', function(vote, callback) {
   vote === 'up'
     ? this.votes += 1
     : this.votes -= 1

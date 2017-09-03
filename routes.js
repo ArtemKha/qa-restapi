@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Question = require('./models').Question
 
-router.param('qID', (req, res, next, id) => {
-  Question.findById(id, (err, doc) => {
+router.param('qID', function(req, res, next, id) {
+  Question.findById(id, function(err, doc) {
     if (err) return next(err)
     if (!doc) {
       const error = new Error('Not Found')
@@ -29,12 +29,11 @@ router.param('aID', (req, res, next, id) => {
 // GET /questions
 router.get('/', (req,res) => {
   Question.find({})
-    .sort({sort: {createdAt: -1}})
+    .sort({createdAt: -1})
     .exec((err, questions, next) => {
             if (err) return next(err)
             res.json(questions)
           })
-  res.json({response: "You sent me a GET request"})
 })
 
 // POST /questions
@@ -56,7 +55,7 @@ router.get('/:qID', (req, res) => {
 // POST /questions/:id/answers
 router.post('/:qID/answers', (req, res, next) => {
   req.question.answers.push(req.body)
-  req.qusetion.save((err, question) => {
+  req.question.save((err, question) => {
     if (err) return next(err)
     res.status(201)
     res.json(question)
@@ -67,7 +66,7 @@ router.post('/:qID/answers', (req, res, next) => {
 router.put('/:qID/answers/:aID', (req, res) => {
   req.answer.update(req.body, (err, result) => {
     if (err) return next(err)
-    req.json(result)
+    res.json(result)
   })
 })
 
@@ -88,6 +87,7 @@ router.post('/:qID/answers/:aID/vote-:dir', (req, res, next) => {
     err.status = 404
     return next(err)
   } else {
+    req.vote = req.params.dir
     next()
   }
 },(req, res, next) => {
